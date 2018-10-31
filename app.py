@@ -1,27 +1,23 @@
 from functions import *
-import base64
-from io import BytesIO
-from flask import Flask, make_response, render_template
+from flask import Flask, render_template, redirect, request, url_for
 
 app=Flask(__name__)
 
 @app.route("/")
 def home():
-	return "Please access the route /drawMolecule/"
+	return redirect(url_for('info'))
 
-@app.route("/drawMolecule/")
-@app.route("/drawMolecule")
+@app.route("/drawMolecule/", methods = ['POST', 'GET'])
 def info():
-	res = make_response("Please enter SMILES code after url\n\nExample: /drawMolecule/CC(=O)Nc1ccc(O)cc1")
-	res.headers["content-type"] = "text/plain"
-	return res
+	if request.method == 'POST':
+		htmlSmiles = request.form['SMILES'].replace("\\", "%5C").replace("/", "%2F")
+		return redirect(url_for('drawMol', smiles=htmlSmiles))
+	return render_template('drawMoleculeForm.html')
 
-@app.route("/drawMolecule/<smiles>")
+@app.route("/drawMolecule/<smiles>/")
 def drawMol(smiles):
+	smiles = smiles.replace("%5C", "\\").replace("%2F", "/")
 	im = ImageFromSmiles(smiles)
 	if (not im):
 		return "Invalid SMILES"
-	buf = BytesIO()
-	im.save(buf, format="PNG")
-	img64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-	return render_template('drawMolecule.html', smiles = smiles, img=img64)
+	return render_template('drawMolecule.html', smiles = smiles, img=Imageto64(im))

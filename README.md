@@ -21,12 +21,7 @@ pip install Flask
 Finally, some environment variable must be set to run the Flask service:
 
 ```
-export FLASK_ENV = development
-export FLASK_APP = app.py
+export FLASK_ENV=development
+export FLASK_APP=app.py
 flask run
 ```
-
-## Known Issues
-
-* SMILES representations containing hashes (#) have any content after the hash ignored due to these characters being interpreted as URL fragment identifiers.
-* SMILES representations containing slashes (/ and \\) lead to a 404 error due to these being used for URL separation.
