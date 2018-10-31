@@ -4,6 +4,7 @@ from io import BytesIO
 from PIL import ImageOps
 import base64
 
+#Trims the image into a box, removing any excess white background
 def wTrim(img):
 	bbox = ImageOps.invert(img).getbbox()
 	if (bbox[2]-bbox[0] < 400 and bbox[3]-bbox[1] < 400):
@@ -14,16 +15,18 @@ def wTrim(img):
 		crop = (bbox[1], bbox[1], bbox[3], bbox[3])
 	return img.crop(crop)
 	
-
+#Generates an image of the molecule represented by the SMILES code given.
+#Returns None if the image cannot be generated.
 def ImageFromSmiles(smiles):
 	image = None
 	if type(smiles) is str:
 		try:
 			image = Draw.MolToImage(Chem.MolFromSmiles(smiles), size=(1000, 1000))
 		except ValueError:
-			return
+			pass
 	return image
 
+#Converts a PIL image into its base64 representation.
 def Imageto64(img):
 	img = wTrim(img)
 	buf = BytesIO()
