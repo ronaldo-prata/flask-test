@@ -1,2 +1,11 @@
-<title>{{smiles}}</title>
-<img src="data:image/png;base64,{{img}}" height="80%">
+<title>{{title}}</title>
+<form method='POST'>
+	<label for="SMILES">Input SMILES code</label>
+	<input name="SMILES" id="SMILES">
+	<input type="submit" value="Submit">
+</form>
+<div>
+	{% if img %}
+	<img src="data:image/png;base64,{{img}}" height="80%">
+	{% endif %}
+</div>
